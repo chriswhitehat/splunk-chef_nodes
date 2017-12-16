@@ -1,0 +1,9 @@
+<nav search_view="search" color="#65A637">
+  <view name="search" />
+  <view name="chef_nodes_status" default='true' />
+  <view name="chef_node_details" />
+  <view name="datasets" />
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+</nav>

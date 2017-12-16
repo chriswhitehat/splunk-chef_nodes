@@ -1,0 +1,48 @@
+<dashboard>
+  <label>Chef Nodes Status</label>
+  <row>
+    <panel>
+      <title>Chef Node Run Status</title>
+      <table>
+        <search>
+          <query>index=chef "Chef Run complete" OR "Chef run process exited unsuccessfully" 
+| rex field=_raw "\S+ (?&lt;level&gt;\w+):" 
+| rex field=_raw "Chef Run complete in (?&lt;last_runtime_seconds&gt;[0-9\.]+)"
+| eval status = if(level="INFO", "Success", "Fail") 
+| fillnull last_runtime_seconds value=0
+| stats latest(_time) AS _time latest(status) AS last_chef_run latest(last_runtime_seconds) AS last_runtime_seconds by host 
+| eval delta_minutes = floor((now() - _time) / 60) 
+| sort delta_minutes
+| rename host AS node 
+| table _time node delta_minutes last_runtime_seconds last_chef_run</query>
+          <earliest>-7d@d</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="last_chef_run">
+          <colorPalette type="map">{"Fail":#D93F3C,"Success":#A2CC3E}</colorPalette>
+        </format>
+        <format type="color" field="delta_minutes">
+          <colorPalette type="minMidMax" maxColor="#D65333" midColor="#FFFFFF" minColor="#1E93C6"></colorPalette>
+          <scale type="minMidMax" maxValue="18" midType="percentile" midValue="75"></scale>
+        </format>
+        <format type="color" field="last_runtime_seconds">
+          <colorPalette type="list">[#65A637,#F7BC38,#D93F3C]</colorPalette>
+          <scale type="threshold">10,20</scale>
+        </format>
+        <drilldown target="My New Window">
+          <link>/app/chef/chef_node_details?form.selNode=$row.node$</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</dashboard>
