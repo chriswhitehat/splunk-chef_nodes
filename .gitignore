@@ -1,0 +1,5 @@
+*.pyo
+*.pyc
+local.meta
+local/
+.project

@@ -1,0 +1,3 @@
+[]
+access = read : [ * ], write : [ esa_splunkadmin, esa_splunkdevs ]
+export = system
