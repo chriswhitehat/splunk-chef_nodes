@@ -40,7 +40,7 @@
           <scale type="threshold">10,20</scale>
         </format>
         <drilldown target="My New Window">
-          <link>/app/chef/chef_node_details?form.selNode=$row.node$</link>
+          <link>/app/chef_nodes/chef_node_details?form.selNode=$row.node$</link>
         </drilldown>
       </table>
     </panel>
